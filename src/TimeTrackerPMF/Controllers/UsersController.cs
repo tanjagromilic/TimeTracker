@@ -9,7 +9,7 @@ using TimeTrackerPMF.Models;
 namespace TimeTrackerPMF.Controllers
 {
     [ApiController]
-    [Route(template:"/api/users")]
+    [Route(template: "/api/users")]
     public class UsersController : Controller
     {
         private readonly TimeTrackerDbContext _dbContext;
@@ -17,14 +17,14 @@ namespace TimeTrackerPMF.Controllers
         public UsersController(TimeTrackerDbContext dbContext, ILogger<UsersController> logger)
         {
             _dbContext = dbContext;
-            _logger=logger;
+            _logger = logger;
         }
 
-        [HttpGet(template:"{id}")]
+        [HttpGet(template: "{id}")]
         public async Task<ActionResult<UserModel>> GetById(long id)
         {
             _logger.LogInformation(message: $"Getting user by id: {id}");
-            var user =await _dbContext.Users.FindAsync(id);
+            var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
                 _logger.LogWarning(message: $"User with id: {id} not found");
@@ -32,7 +32,7 @@ namespace TimeTrackerPMF.Controllers
             }
 
             return UserModel.FromUser(user);
-            
+
         }
 
         [HttpGet]
@@ -52,6 +52,64 @@ namespace TimeTrackerPMF.Controllers
                 TotalCount = totalUsers
             };
         }
+
+        [HttpDelete(template: "{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            _logger.LogInformation(message: $"Deleting user with id {id}");
+
+            var user = await _dbContext.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogWarning(message: $"No user found with id {id}");
+                return NotFound();
+            }
+
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UserModel>> Create(UserInputModel model)
+        {
+            _logger.LogInformation(message: $"Creating a new user with name {model.Name}");
+
+            var user = new Domain.User();
+            model.MapTo(user);
+
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+
+            var resultModel = UserModel.FromUser(user);
+
+            return CreatedAtAction(nameof(GetById), "users", new { id = user.Id }, resultModel);
+
+        }
+
+        [HttpPut(template:"{id}")]
+        public async Task<ActionResult<UserModel>> Update(long id, UserInputModel model)
+        {
+            _logger.LogInformation(message: $"Updating  user with id {id}");
+            var user = await _dbContext.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogWarning(message: $"No user found with id {id}");
+                return NotFound();
+            }
+
+            model.MapTo(user);
+
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+
+            return UserModel.FromUser(user);
+
+        }
+
 
     }
 }
