@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using Project = TimeTrackerPMF.Domain.Project;
 namespace TimeTrackerPMF.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("/api/projects")]
     public class ProjectsController : Controller
     {
@@ -61,6 +63,7 @@ namespace TimeTrackerPMF.Controllers
             };
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -78,7 +81,7 @@ namespace TimeTrackerPMF.Controllers
 
             return Ok();
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<ProjectModel>> Create(ProjectInputModel model)
         {
@@ -100,7 +103,7 @@ namespace TimeTrackerPMF.Controllers
 
             return CreatedAtAction(nameof(GetById), "projects", new { id = project.Id }, resultModel);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProjectModel>> Update(long id, ProjectInputModel model)
         {

@@ -6,10 +6,12 @@ using TimeTrackerPMF.Data;
 using TimeTrackerPMF.Domain;
 using TimeTrackerPMF.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TimeTrackerPMF.Controllers
 {
     [ApiController]
+    [Authorize]
       [Route("/api/time-entries/")]
        
     public class TimeEntriesController : Controller
@@ -53,6 +55,7 @@ namespace TimeTrackerPMF.Controllers
             };
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -71,6 +74,7 @@ namespace TimeTrackerPMF.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<TimeEntryModel>> Create(TimeEntryInputModel model)
         {
@@ -104,6 +108,7 @@ namespace TimeTrackerPMF.Controllers
             return CreatedAtAction(nameof(GetById), "TimeEntries", new { id = timeEntry.Id }, resultModel);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<TimeEntryModel>> Update(long id, TimeEntryInputModel model)
         {

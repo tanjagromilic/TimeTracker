@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using TimeTrackerPMF.Data;
 using FluentValidation.AspNetCore;
 using TimeTrackerPMF.Models.Validation;
+using TimeTrackerPMF.Extensions;
 
 namespace TimeTrackerPMF
 {
@@ -23,6 +24,9 @@ namespace TimeTrackerPMF
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TimeTrackerDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddJwtBearerAuthentication(Configuration);
+
             services.AddControllers().AddFluentValidation(options=>options.RegisterValidatorsFromAssemblyContaining<UserInputModelValidator>());
         }
 
@@ -44,6 +48,8 @@ namespace TimeTrackerPMF
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using TimeTrackerPMF.Models;
 namespace TimeTrackerPMF.Controllers
 {
         [ApiController]
+        [Authorize]
         [Route("/api/clients")]
         public class ClientsController : Controller
         {
@@ -59,7 +61,8 @@ namespace TimeTrackerPMF.Controllers
                 };
             }
 
-            [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        [HttpDelete("{id}")]
             public async Task<IActionResult> Delete(long id)
             {
                 _logger.LogDebug($"Deleting client with id {id}");
@@ -77,7 +80,8 @@ namespace TimeTrackerPMF.Controllers
                 return Ok();
             }
 
-            [HttpPost]
+        [Authorize(Roles = "admin")]
+        [HttpPost]
             public async Task<ActionResult<ClientModel>> Create(ClientInputModel model)
             {
                 _logger.LogDebug($"Creating a new client with name {model.Name}");
@@ -93,7 +97,8 @@ namespace TimeTrackerPMF.Controllers
                 return CreatedAtAction(nameof(GetById), "clients", new { id = client.Id }, resultModel);
             }
 
-            [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
+        [HttpPut("{id}")]
             public async Task<ActionResult<ClientModel>> Update(long id, ClientInputModel model)
             {
                 _logger.LogDebug($"Updating client with id {id}");
