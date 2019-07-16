@@ -27,6 +27,8 @@ namespace TimeTrackerPMF
 
             services.AddJwtBearerAuthentication(Configuration);
 
+            services.AddOpenApi();
+
             services.AddControllers().AddFluentValidation(options=>options.RegisterValidatorsFromAssemblyContaining<UserInputModelValidator>());
         }
 
@@ -52,6 +54,10 @@ namespace TimeTrackerPMF
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseOpenApi();
+
+            app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints =>
             {

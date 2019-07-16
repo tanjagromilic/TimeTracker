@@ -9,6 +9,9 @@ using TimeTrackerPMF.Models;
 
 namespace TimeTrackerPMF.Controllers
 {
+    /// <summary>
+    /// Encapsulates funcionality for adding, modifying and deleting users.
+    /// </summary>
     [ApiController]
     [Authorize]
     [Route(template: "/api/users")]
@@ -22,6 +25,7 @@ namespace TimeTrackerPMF.Controllers
             _logger = logger;
         }
 
+       
         [HttpGet(template: "{id}")]
         public async Task<ActionResult<UserModel>> GetById(long id)
         {
@@ -36,7 +40,12 @@ namespace TimeTrackerPMF.Controllers
             return UserModel.FromUser(user);
 
         }
-
+        /// <summary>
+        /// Gets a single page of users.
+        /// </summary>
+        /// <param name="page">Page to retrieve.</param>
+        /// <param name="size">Page size</param>
+        /// <returns>Paged list of users</returns>
         [HttpGet]
         public async Task<ActionResult<PagedList<UserModel>>> GetPage(int page = 1, int size = 5)
         {

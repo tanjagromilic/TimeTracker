@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using NSwag.Annotations;
 
 namespace TimeTrackerPMF.Controllers
 {
     //WARNING: For demo only
+    [OpenApiIgnore]
     public class DummyAuthController : Controller
     {
         private readonly IConfiguration _configuration;
