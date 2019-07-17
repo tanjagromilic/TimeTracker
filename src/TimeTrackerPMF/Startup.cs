@@ -8,6 +8,8 @@ using TimeTrackerPMF.Data;
 using FluentValidation.AspNetCore;
 using TimeTrackerPMF.Models.Validation;
 using TimeTrackerPMF.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace TimeTrackerPMF
 {
@@ -30,6 +32,11 @@ namespace TimeTrackerPMF
             services.AddOpenApi();
 
             services.AddControllers().AddFluentValidation(options=>options.RegisterValidatorsFromAssemblyContaining<UserInputModelValidator>());
+
+            services.AddHealthChecks()
+                .AddSqlite(Configuration.GetConnectionString("DefaultConnection"));
+
+            services.AddHealthChecksUI();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,9 +68,16 @@ namespace TimeTrackerPMF
 
             app.UseSwaggerUi3();
 
+            app.UseHealthChecksUI();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
         }
     }
