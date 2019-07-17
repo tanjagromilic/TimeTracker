@@ -47,6 +47,8 @@ namespace TimeTrackerPMF
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
+            app.UseMiddleware<LimitingMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
