@@ -31,6 +31,8 @@ namespace TimeTrackerPMF
 
             services.AddOpenApi();
 
+            services.AddCors();
+
             services.AddControllers().AddFluentValidation(options=>options.RegisterValidatorsFromAssemblyContaining<UserInputModelValidator>());
 
             services.AddHealthChecks()
@@ -63,6 +65,13 @@ namespace TimeTrackerPMF
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            // WARNING: This is just for demo purpose! Usually, you should limit access to a specific origin.
+            app.UseCors(
+                builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
 
             app.UseOpenApi();
 

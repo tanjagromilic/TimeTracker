@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using TimeTrackerPMF.Client.Security;
+using TimeTrackerPMF.Client.Services;
 
 namespace TimeTrackerPMF.Client
 {
@@ -11,6 +12,8 @@ namespace TimeTrackerPMF.Client
             services.AddAuthorizationCore();
 
             services.AddTokenAuthenticationStateProvider();
+
+            services.AddTransient<ApiService>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)
